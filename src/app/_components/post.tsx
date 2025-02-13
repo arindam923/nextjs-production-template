@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "~/hooks/use-toast";
 
 import { api } from "~/trpc/react";
 
@@ -13,6 +14,12 @@ export function LatestPost() {
     onSuccess: async () => {
       await utils.post.invalidate();
       setName("");
+    },
+    onError: (err) => {
+      toast({
+        title: err.message,
+        description: "please log into your account first",
+      });
     },
   });
 

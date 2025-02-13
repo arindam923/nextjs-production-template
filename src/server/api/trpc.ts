@@ -7,8 +7,10 @@
  * need to use are documented accordingly near the end.
  */
 import { initTRPC } from "@trpc/server";
+import { headers } from "next/headers";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { auth } from "~/lib/auth";
 
 import { db } from "~/server/db";
 
@@ -91,7 +93,9 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 });
 
 const authMiddleware = t.middleware(async ({ next, ctx }) => {
-  const isAuthenticated = true;
+  const isAuthenticated = await auth.api.getSession({
+    headers: await headers(),
+  });
   if (!isAuthenticated) {
     throw new Error("Unauthorized");
   }
